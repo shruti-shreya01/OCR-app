@@ -33,37 +33,52 @@
 
 
 import streamlit as st
+import cv2
 import pytesseract
 from PIL import Image
 import numpy as np
-import cv2
+import matplotlib.pyplot as plt
+import tempfile
+import os
 
 # Set the path for the Tesseract executable
-pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'  # Update if necessary
+pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'  # Update if necessary for local execution
 
+# Streamlit app
 st.title("Image Text Extractor with OCR")
+
 st.write("Upload an image, and the app will extract the text using OCR (Tesseract).")
 
+# Image uploader
 uploaded_file = st.file_uploader("Choose an image file", type=['jpg', 'jpeg', 'png'])
 
 if uploaded_file is not None:
-    # Open the image using PIL and display it
+    # Open the uploaded image
     image = Image.open(uploaded_file)
+
+    # Display the uploaded image
     st.image(image, caption='Uploaded Image', use_column_width=True)
 
-    # Convert the PIL image to a NumPy array
-    img_array = np.array(image)
+    # Save the uploaded image temporarily
+    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+        temp_file.write(uploaded_file.read())
+        image_path = temp_file.name
 
-    # Convert the image from RGB to BGR (OpenCV format)
-    img_bgr = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
+    # Extract text from the image using Tesseract OCR
+    def extract_text_from_image(image_path):
+        # Load the image using OpenCV
+        image = cv2.imread(image_path)
+        
+        # Convert the image to RGB (from BGR)
+        rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-    # Function to extract text using pytesseract
-    def extract_text_from_image(image_bgr):
-        extracted_text = pytesseract.image_to_string(image_bgr)
+        # Use pytesseract to perform OCR on the image
+        extracted_text = pytesseract.image_to_string(rgb_image)
+
         return extracted_text
 
-    # Extract text from the image
-    extracted_text = extract_text_from_image(img_bgr)
+    # Extract text from the uploaded image
+    extracted_text = extract_text_from_image(image_path)
 
     # Display the extracted text
     st.subheader("Extracted Text:")
