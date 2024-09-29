@@ -37,6 +37,8 @@ import cv2
 import numpy as np
 from PIL import Image
 
+pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'  # Update if necessary
+
 # Title
 st.title("OCR Application")
 
