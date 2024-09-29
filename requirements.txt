@@ -8,4 +8,4 @@ torch
 transformers
 huggingface-hub
 matplotlib
-
+cv2
