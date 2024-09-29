@@ -41,7 +41,7 @@ import numpy as np
 st.title("OCR Image Text Extraction")
 
 # File uploader in Streamlit
-uploaded_file = st.file_uploader("Choose an image...", type="jpg")
+uploaded_file = st.file_uploader("Choose an image...")
 
 if uploaded_file is not None:
     # Convert the uploaded file to an OpenCV image
