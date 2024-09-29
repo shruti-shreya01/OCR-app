@@ -37,38 +37,47 @@ import cv2
 import pytesseract
 from PIL import Image
 import matplotlib.pyplot as plt
-import pickle
 
 # Set the path for the Tesseract executable
 pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
 
-# Load the OCR model from the pickle file
-def load_pickle_model(filename):
-    with open(filename, 'rb') as file:
-        model = pickle.load(file)
-    return model
+# Define the OCR extraction function directly in the Streamlit app
+def extract_text_from_image(image_path):
+    # Load the image using OpenCV
+    image = cv2.imread(image_path)
 
-# Load the OCR extraction function
-extract_text_from_image = load_pickle_model('ocr_model.pkl')
+    # Check if the image was loaded successfully
+    if image is None:
+        raise ValueError(f"Image not found or could not be loaded at path: {image_path}")
+
+    # Convert the image to RGB (from BGR)
+    rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+    # Use pytesseract to do OCR on the image
+    extracted_text = pytesseract.image_to_string(rgb_image)
+
+    return extracted_text
 
 # Streamlit app
-st.title("Image Text Extraction using OCR")
+st.title("Image Text Extractor with OCR")
+st.write("Upload an image, and the app will extract the text using OCR.")
 
-# Upload an image file
-uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "png", "jpeg"])
+# Image uploader
+uploaded_file = st.file_uploader("Choose an image file", type=['jpg', 'png', 'jpeg'])
 
 if uploaded_file is not None:
-    # Display the uploaded image
+    # Open the uploaded image using PIL
     image = Image.open(uploaded_file)
     st.image(image, caption='Uploaded Image', use_column_width=True)
 
-    # Save the image to a temporary location
+    # Save the image to a temporary file
     with open("temp_image.png", "wb") as f:
         f.write(uploaded_file.getbuffer())
 
-    # Extract text using the OCR model
+    # Extract text using the defined OCR function
     extracted_text = extract_text_from_image("temp_image.png")
 
     # Display the extracted text
     st.subheader("Extracted Text:")
     st.write(extracted_text)
+
