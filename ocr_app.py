@@ -39,7 +39,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 # Set the path for the Tesseract executable
-pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
+pytesseract.pytesseract.tesseract_cmd = r"C:\Users\shrey\Downloads\Tesseract-OCR\tessdata"
 
 # Define the OCR extraction function directly in the Streamlit app
 def extract_text_from_image(image_path):
