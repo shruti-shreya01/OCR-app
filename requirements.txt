@@ -3,9 +3,7 @@ pyngrok
 pytesseract
 opencv-python-headless
 Pillow
-numpy
-torch
 transformers
 huggingface-hub
-matplotlib
+torch
 
